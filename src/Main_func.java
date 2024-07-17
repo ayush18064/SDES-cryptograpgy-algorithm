@@ -39,7 +39,7 @@ class SDES_ALGORITHM {
     }
 
     boolean[] substitutionOperation(int left[], int right[]) {
-        boolean resultArr[] = new boolean[4];
+
 
         int sOrow1 = left[0];
         int sOrow2 = left[3];
@@ -90,12 +90,23 @@ class SDES_ALGORITHM {
 
 
         System.out.println("\n");
-       for(int val:s0_s1_combined_val){
-           System.out.print(val+" ");
-       }
+        for (int val : s0_s1_combined_val) {
+            System.out.print(val + " ");
+        }
+        boolean resultArr[] = convertIntArrayToBoolArray(s0_s1_combined_val);
 
 
         return resultArr;
+    }
+
+    boolean[] convertIntArrayToBoolArray(int[] intArray) {
+        boolean[] boolArray = new boolean[intArray.length];
+
+        for (int i = 0; i < intArray.length; i++) {
+            boolArray[i] = intArray[i] != 0;
+        }
+
+        return boolArray;
     }
 
     boolean[] convert(String str) {
@@ -333,7 +344,33 @@ class SDES_ALGORITHM {
             System.out.print(val + " ");
         }
         boolean[] substitution = substitutionOperation(xorLeftPart, xorRightPart);
+        String substitutionRes = booleanArrayToString(substitution);
+        boolean[] p4onsunstituionResult = ApplyPermutations(p4, substitutionRes, 4);
+        System.out.println("applting p4 on s0 s1");
+        for (boolean val : p4onsunstituionResult) {
+            System.out.print(val + " ");
+        }
+        boolean[] xorP4WithLeftHalfIp = new boolean[4];
+//        ---------------------------Perform XOR with left part of the ip and the combination of s0 s1---------------------------
+        for (int i = 0; i < 4; i++) {
+            xorP4WithLeftHalfIp[i] = leftPartIpPlainText[i] ^ p4onsunstituionResult[i];
+        }
+        System.out.println("XOR Result");
+        for (boolean j : xorP4WithLeftHalfIp) {
+            System.out.print(j + " ");
+        }
+//        ----------------------We combine both halves i.e. right half of initial permutation and output of ip.------------------------
+        boolean CombinationOfRightHalfiP_Xor_result[] = new boolean[8];
 
+        // Copy elements from array1 to combinedArray
+        System.arraycopy(xorP4WithLeftHalfIp, 0, CombinationOfRightHalfiP_Xor_result, 0, rightPartIpPlainText.length);
+
+// Copy elements from array2 to combinedArray, starting after array1
+        System.arraycopy(rightPartIpPlainText, 0, CombinationOfRightHalfiP_Xor_result, rightPartIpPlainText.length, xorLeftPart.length);
+        System.out.println("right half of initial permutation and output of ip\n");
+        for(boolean val:CombinationOfRightHalfiP_Xor_result){
+            System.out.print(val+" ");
+        }
 
     }
 
