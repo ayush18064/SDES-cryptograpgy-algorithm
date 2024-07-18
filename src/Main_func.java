@@ -1,5 +1,6 @@
 import com.sun.security.jgss.GSSUtil;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -98,6 +99,30 @@ class SDES_ALGORITHM {
 
         return resultArr;
     }
+
+    boolean[] SwapOperation(boolean[] arr) {
+        boolean temp[] = new boolean[8];
+
+        boolean[] leftHalf = new boolean[4];
+        boolean[] rightHalf = new boolean[4];
+//--------------------splitting the array for swap operation----------------------------
+        System.arraycopy(arr, 0, leftHalf, 0, 4);
+        System.arraycopy(arr, 4, rightHalf, 0, 4);
+//        -------------------------------------------------------------
+     // now performing the swap operation left half becomes the right half and vice versa
+        System.arraycopy(rightHalf,0,temp,0,4);
+        System.arraycopy(leftHalf,0,temp,4,4);
+
+//        System.arraycopy(xorP4WithLeftHalfIp, 0, CombinationOfRightHalfiP_Xor_result, 0, rightPartIpPlainText.length);
+//        System.arraycopy(rightPartIpPlainText, 0, CombinationOfRightHalfiP_Xor_result, rightPartIpPlainText.length, xorLeftPart.length);
+        System.out.println("Swap operation");
+        for(boolean val:temp){
+            System.out.print(val+" ");
+        }
+
+        return temp;
+    }
+
 
     boolean[] convertIntArrayToBoolArray(int[] intArray) {
         boolean[] boolArray = new boolean[intArray.length];
@@ -362,15 +387,19 @@ class SDES_ALGORITHM {
 //        ----------------------We combine both halves i.e. right half of initial permutation and output of ip.------------------------
         boolean CombinationOfRightHalfiP_Xor_result[] = new boolean[8];
 
-        // Copy elements from array1 to combinedArray
-        System.arraycopy(xorP4WithLeftHalfIp, 0, CombinationOfRightHalfiP_Xor_result, 0, rightPartIpPlainText.length);
 
-// Copy elements from array2 to combinedArray, starting after array1
+        System.arraycopy(xorP4WithLeftHalfIp, 0, CombinationOfRightHalfiP_Xor_result, 0, rightPartIpPlainText.length);
         System.arraycopy(rightPartIpPlainText, 0, CombinationOfRightHalfiP_Xor_result, rightPartIpPlainText.length, xorLeftPart.length);
+
+
         System.out.println("right half of initial permutation and output of ip\n");
-        for(boolean val:CombinationOfRightHalfiP_Xor_result){
-            System.out.print(val+" ");
+        for (boolean val : CombinationOfRightHalfiP_Xor_result) {
+            System.out.print(val + " ");
         }
+//        ---------------------performing swap operation---------------------------------------
+        boolean DividingAndSwapping[] = SwapOperation(CombinationOfRightHalfiP_Xor_result);
+
+
 
     }
 
