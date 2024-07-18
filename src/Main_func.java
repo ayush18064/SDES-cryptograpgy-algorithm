@@ -109,15 +109,15 @@ class SDES_ALGORITHM {
         System.arraycopy(arr, 0, leftHalf, 0, 4);
         System.arraycopy(arr, 4, rightHalf, 0, 4);
 //        -------------------------------------------------------------
-     // now performing the swap operation left half becomes the right half and vice versa
-        System.arraycopy(rightHalf,0,temp,0,4);
-        System.arraycopy(leftHalf,0,temp,4,4);
+        // now performing the swap operation left half becomes the right half and vice versa
+        System.arraycopy(rightHalf, 0, temp, 0, 4);
+        System.arraycopy(leftHalf, 0, temp, 4, 4);
 
 //        System.arraycopy(xorP4WithLeftHalfIp, 0, CombinationOfRightHalfiP_Xor_result, 0, rightPartIpPlainText.length);
 //        System.arraycopy(rightPartIpPlainText, 0, CombinationOfRightHalfiP_Xor_result, rightPartIpPlainText.length, xorLeftPart.length);
         System.out.println("Swap operation");
-        for(boolean val:temp){
-            System.out.print(val+" ");
+        for (boolean val : temp) {
+            System.out.print(val + " ");
         }
 
         return temp;
@@ -308,14 +308,10 @@ class SDES_ALGORITHM {
         String LS_2_p8 = booleanArrayToString(LS_2);
         boolean[] LS_2_p8_Key_2 = ApplyPermutations(p8, LS_2_p8, 8);
         System.out.println("This is the key 2");
-        for (boolean val : LS_2_p8_Key_2) {
-            System.out.print(val + " ");
-        }
+
         String KEY1 = booleanArrayToString(LS_2_p8_Key_2);
         System.out.println("\nthis is Key 1");
-        for (boolean val1 : LS_1_Key1) {
-            System.out.print(val1 + " ");
-        }
+
         String KEY2 = booleanArrayToString(LS_1_Key1);
         System.out.println("\n");
 
@@ -323,9 +319,7 @@ class SDES_ALGORITHM {
         System.out.println(KEY1);
         System.out.println(KEY2);
         System.out.println("This is the IP with Plain text");
-        for (boolean val : PlaintextIp) {
-            System.out.print(val + " ");
-        }
+
 //        -------------------------------------Divide the Ip in 2 parts of 4 bits each---------------------------------------------------------
 
         boolean[] leftPartIpPlainText = new boolean[4];
@@ -346,44 +340,31 @@ class SDES_ALGORITHM {
         }
 //        -----------------------------------------XOR Result Printing---------------------------------
         System.out.println("\nXOR RESULT:\n");
-        for (int j = 0; j < 8; j++) {
-            System.out.print(XorResult[j] + " ");
-        }
+
 //        -----------------------------------------dividing the Xor output in 2 parts ---------------------------------
         boolean[] XORLeftPart = new boolean[4];
         boolean[] XORRightPart = new boolean[4];
         System.arraycopy(XorResult, 0, XORLeftPart, 0, 4);
         System.arraycopy(XorResult, 4, XORRightPart, 0, 4);
-        System.out.println("XOR LEFT PART");
+
 //-----------------------now performing the S row operation on the separated parts--------------------------------------
         String XorLeftPart = booleanArrayToString(XORLeftPart);
         String XorRightPart = booleanArrayToString(XORRightPart);
         int[] xorLeftPart = convertStringToIntArray(XorLeftPart);
         int[] xorRightPart = convertStringToIntArray(XorRightPart);
-        System.out.println("Integer left part");
-        for (int val : xorLeftPart) {
-            System.out.print(val + " ");
-        }
-        System.out.println("Integer right part");
-        for (int val : xorRightPart) {
-            System.out.print(val + " ");
-        }
+
+
         boolean[] substitution = substitutionOperation(xorLeftPart, xorRightPart);
         String substitutionRes = booleanArrayToString(substitution);
         boolean[] p4onsunstituionResult = ApplyPermutations(p4, substitutionRes, 4);
         System.out.println("applting p4 on s0 s1");
-        for (boolean val : p4onsunstituionResult) {
-            System.out.print(val + " ");
-        }
+
         boolean[] xorP4WithLeftHalfIp = new boolean[4];
 //        ---------------------------Perform XOR with left part of the ip and the combination of s0 s1---------------------------
         for (int i = 0; i < 4; i++) {
             xorP4WithLeftHalfIp[i] = leftPartIpPlainText[i] ^ p4onsunstituionResult[i];
         }
-        System.out.println("XOR Result");
-        for (boolean j : xorP4WithLeftHalfIp) {
-            System.out.print(j + " ");
-        }
+
 //        ----------------------We combine both halves i.e. right half of initial permutation and output of ip.------------------------
         boolean CombinationOfRightHalfiP_Xor_result[] = new boolean[8];
 
@@ -393,12 +374,66 @@ class SDES_ALGORITHM {
 
 
         System.out.println("right half of initial permutation and output of ip\n");
-        for (boolean val : CombinationOfRightHalfiP_Xor_result) {
-            System.out.print(val + " ");
-        }
-//        ---------------------performing swap operation---------------------------------------
-        boolean DividingAndSwapping[] = SwapOperation(CombinationOfRightHalfiP_Xor_result);
 
+//        ---------------------performing swap operation---------------------------------------
+        boolean DividingAndSwapping[] = SwapOperation(CombinationOfRightHalfiP_Xor_result); // till this using key 1 is finished
+
+
+//        -----------------now doing the same thing with key 2----------------------------------
+
+
+// Second Round
+        boolean[] leftPartIpPlainTextSecond = new boolean[4];
+        boolean[] rightPartIpPlainTextSecond = new boolean[4];
+        System.arraycopy(DividingAndSwapping, 0, leftPartIpPlainTextSecond, 0, 4);
+        System.arraycopy(DividingAndSwapping, 4, rightPartIpPlainTextSecond, 0, 4);
+
+// Apply the EP on the right part of the swapped halves
+        String EpOnRightHalfWithKey2 = booleanArrayToString(rightPartIpPlainTextSecond);
+        boolean EpResultWithKey2[] = ApplyPermutations(ep, EpOnRightHalfWithKey2, 8);
+
+// Perform XOR operation on KEY2 and EP result
+        boolean[] XorResultWithKey2 = new boolean[8];
+        for (int i = 0; i < 8; i++) {
+            XorResultWithKey2[i] = EpResultWithKey2[i] ^ LS_2_p8_Key_2[i];
+        }
+
+// Divide the XOR result into 2 parts
+        boolean[] XORLeftPartWithKey2 = new boolean[4];
+        boolean[] XORRightPartWithKey2 = new boolean[4];
+        System.arraycopy(XorResultWithKey2, 0, XORLeftPartWithKey2, 0, 4);
+        System.arraycopy(XorResultWithKey2, 4, XORRightPartWithKey2, 0, 4);
+
+// Perform substitution operation
+        String XorLeftPartKey2 = booleanArrayToString(XORLeftPartWithKey2);
+        String XorRightPartKey2 = booleanArrayToString(XORRightPartWithKey2);
+        int[] xorLeftPartKey2 = convertStringToIntArray(XorLeftPartKey2);
+        int[] xorRightPartKey2 = convertStringToIntArray(XorRightPartKey2);
+        boolean[] substitutionKey2 = substitutionOperation(xorLeftPartKey2, xorRightPartKey2);
+
+// Apply P4 permutation on substitution result
+        String substitutionResKey2 = booleanArrayToString(substitutionKey2);
+        boolean[] p4onsunstituionResultKey2 = ApplyPermutations(p4, substitutionResKey2, 4);
+
+// Perform XOR with the left part of the IP after swap and the P4 result
+        boolean[] xorP4WithLeftHalfIpKey2 = new boolean[4];
+        for (int i = 0; i < 4; i++) {
+            xorP4WithLeftHalfIpKey2[i] = leftPartIpPlainTextSecond[i] ^ p4onsunstituionResultKey2[i];
+        }
+
+// Combine both halves: XOR result and right part of the swapped IP
+        boolean CombinationOfRightHalfiP_Xor_resultKey2[] = new boolean[8];
+        System.arraycopy(xorP4WithLeftHalfIpKey2, 0, CombinationOfRightHalfiP_Xor_resultKey2, 0, rightPartIpPlainTextSecond.length);
+        System.arraycopy(rightPartIpPlainTextSecond, 0, CombinationOfRightHalfiP_Xor_resultKey2, rightPartIpPlainTextSecond.length, xorLeftPartKey2.length);
+
+// Apply the final inverse permutation (IPinv) on the combined result
+        String FinalCombinationString = booleanArrayToString(CombinationOfRightHalfiP_Xor_resultKey2);
+        boolean[] FinalPermutationResult = ApplyPermutations(IPinv, FinalCombinationString, 8);
+
+        System.out.println("Final encrypted result:");
+        for (boolean val : FinalPermutationResult) {
+            System.out.print(val ? '1' : '0');
+        }
 
 
     }
